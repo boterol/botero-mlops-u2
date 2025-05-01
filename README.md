@@ -5,7 +5,7 @@ Para el problema anterior, proponga un pipeline de ML en donde describa, de mane
 
 Considerando el mismo problema, se necesita desarrollar un servicio que permita a un médico usar el modelo para obtener una respuesta
 
-*Importante:* Para reutilizar este pipeline en mi proyecto de grado, usare parte del codigo y datos de este para el desarollo, tratandose asi de una clasificacion de tumores. 
+**Importante:** Para reutilizar este pipeline en mi proyecto de grado, usare parte del codigo y datos de este para el desarollo, tratandose asi de una clasificacion de tumores. 
 
 # Guia de uso:
 
