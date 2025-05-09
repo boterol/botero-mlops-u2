@@ -1,13 +1,10 @@
 import pickle
-
 from typing import Union
-
 from fastapi import FastAPI, UploadFile, File
-
 import pandas as pd
-
 import DataReformatting 
 import DataPreparation
+import re
 
 app = FastAPI()
 
@@ -20,20 +17,34 @@ def read_root():
 
 @app.post("/predict_one")
 async def predict_one(file: UploadFile = File(...)):
-    df=pd.read_csv(file.file)
-    print(df.head())    
+    #se usan los nombres de los archivsod para simular la prediccion de un modelo
+    filename=file.filename
+    if filename.startswith('_1'):
+        return {'TUMOR GRADE: ', 1}
+    elif filename.startswith('_2'):
+        return {'TUMOR GRADE: ', 2}
+    elif filename.startswith('_3'):          
+        return {'TUMOR GRADE: ', 3}
+    elif filename.startswith('_4'):
+        return {'TUMOR GRADE: ', 4}
     
-    df=DataReformatting.process(df)
     
-    df=DataPreparation.process(df)
+    #APLICADO AL PROYECTO DE GRADO
 
-    print(df.head())
-    with open('decision_tree_model.pkl', 'rb') as f:
-        clf_model = pickle.load(f)
+    #df=pd.read_csv(file.file)
+    #print(df.head())    
+    
+    #df=DataReformatting.process(df)
+    
+    #df=DataPreparation.process(df)
 
-    pred=clf_model.predict(df)
-    print('PRED: ', pred)
-    return {'HIGHGRADE: ', pred.tolist()[0]}
+    #print(df.head())
+    #with open('decision_tree_model.pkl', 'rb') as f:
+    #    clf_model = pickle.load(f)
+
+    #pred=clf_model.predict(df)
+    #print('PRED: ', pred)
+    #return {'HIGHGRADE: ', pred.tolist()[0]}
 
 
 
