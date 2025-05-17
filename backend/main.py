@@ -3,8 +3,6 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 import pickle
 import pandas as pd
-import DataReformatting 
-import DataPreparation
 import re
 from datetime import datetime, timezone
 import json
@@ -27,24 +25,23 @@ async def predict_one(file: UploadFile = File(...)):
         filename=file.filename
         prediction = None
         if filename.startswith('_1'):
-            prediction=1
+            prediction='LOW GRADE (1)'
         elif filename.startswith('_2'):
-            prediction=2
+            prediction='LOW GRADE (2)'
         elif filename.startswith('_3'):          
-            prediction=3
+            prediction='HIGH GRADE (3)'
         elif filename.startswith('_4'):
-            prediction=4
-        
-        
-        if prediction is not None:
-            record = {
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "filename": filename,
-                "tumor_grade": prediction
-            }
-            with open("predictions_log.json", "a") as f:
-                f.write(json.dumps(record) + "\n")
-        
+            prediction='HIGH GRADE (4)'
+
+
+        record = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "filename": filename,
+            "tumor_grade": prediction
+        }
+        with open("predictions_log.json", "a") as f:
+            f.write(json.dumps(record) + "\n")
+    
         return JSONResponse(content={"filename": filename, "prediction": prediction})
     
     except Exception as e:
@@ -72,13 +69,12 @@ async def predict_one(file: UploadFile = File(...)):
 @app.get("/retreive_last_predictions")
 async def retreive_predictions():
     file_path = "predictions_log.json"
-    
     try:        
         df = pd.read_json(file_path, lines=True)
         
         if df.empty or "timestamp" not in df.columns:
             return JSONResponse(content={"message": "Prediction log is empty or invalid."}, status_code=400)
-        
+        print('CHECKPOINT 1: ', df.index)
         df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
         df = df.dropna(subset=["timestamp"])  # remover filas con timestamps invalidos
 
@@ -93,7 +89,7 @@ async def retreive_predictions():
         return JSONResponse(content=predictions_json)
 
     except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+       return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
 
