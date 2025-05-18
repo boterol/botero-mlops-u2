@@ -24,15 +24,17 @@ async def predict_one(file: UploadFile = File(...)):
     try: 
         filename=file.filename
         prediction = None
-        if filename.startswith('_1'):
-            prediction='LOW GRADE (1)'
-        elif filename.startswith('_2'):
-            prediction='LOW GRADE (2)'
-        elif filename.startswith('_3'):          
-            prediction='HIGH GRADE (3)'
-        elif filename.startswith('_4'):
-            prediction='HIGH GRADE (4)'
-
+        match filename[:2]:  # Check first 2 characters (e.g., '_1', '_3')
+            case '_1':
+                prediction= 'LOW GRADE (1)'
+            case '_2':
+                prediction = 'LOW GRADE (2)'
+            case '_3':
+                prediction = 'HIGH GRADE (3)'
+            case '_4':
+                prediction = 'HIGH GRADE (4)'
+            case _:
+                raise ValueError(f"Invalid filename prefix: '{filename[:2]}'. Expected '_1', '_2', '_3', or '_4'.")
 
         record = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -43,7 +45,7 @@ async def predict_one(file: UploadFile = File(...)):
             f.write(json.dumps(record) + "\n")
     
         return JSONResponse(content={"filename": filename, "prediction": prediction})
-    
+
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
