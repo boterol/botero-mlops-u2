@@ -9,7 +9,7 @@ def test_predict_one():
     test_file = "_3_test_file.csv"
     with open(test_file, "w") as f:  # Create a dummy file
         f.write("dummy,data")
-    
+
     try:
         with open(test_file, "rb") as f:
             response = client.post(
@@ -22,6 +22,7 @@ def test_predict_one():
             "filename": test_file,
             "prediction": "HIGH GRADE (3)"
         }
+
     finally:
         if os.path.exists(test_file):
             os.path.exists(test_file)
@@ -31,7 +32,7 @@ def test_retrieve_last_predictions():
     test_file = "_2_test_file.csv"
     with open(test_file, "w") as f:
         f.write("dummy,data")
-    
+
     try:
         # Make a prediction to populate the log
         with open(test_file, "rb") as f:

@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  notify-and-test:
+    runs-on: ubuntu-latest
+    name: Notify PR and run unit tests
+    steps:
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      #Mensaje inicial en el PR
+      - name: Comment on PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            CI/CD en acción. Ejecutando tareas...
+          comment_tag: pipeline-start
+          update_comment: true
+
+      #entorno Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      #Instalación de dependencias
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest httpx
+          pip install -r backend/requirements.txt
+          # Agregar aquí otras dependencias necesarias
+
+      #run tests
+      - name: Run unit tests
+        run: |
+          pytest backend/test.py -v
+
+      #Mensaje de fin
+      - name: Notify test results
+        if: always()
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            Proceso CI/CD completado.
+            Estado final: ${{ job.status }}
+            Detalles disponibles en la pestaña Actions.
+          comment_tag: pipeline-end
+          update_comment: true
