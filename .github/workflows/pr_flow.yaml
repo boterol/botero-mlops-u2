@@ -19,9 +19,10 @@ jobs:
         with:
           message: |
             CI/CD en acción. Ejecutando tareas...
-          comment_tag: pipeline-start
-          update_comment: true
-
+          comment-tag: pipeline-start
+          mode: upsert
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
       #entorno Python
       - name: Set up Python
         uses: actions/setup-python@v4
