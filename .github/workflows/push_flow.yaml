@@ -43,7 +43,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Construir y publicar imagen Docker
+      # Paso Construir y publicar imagen Docker
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
